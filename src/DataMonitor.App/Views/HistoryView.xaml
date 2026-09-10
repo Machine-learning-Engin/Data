@@ -1,0 +1,80 @@
+<UserControl x:Class="DataMonitor.App.Views.HistoryView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="30,26,30,30">
+            <Grid><TextBlock Text="Usage History" Style="{StaticResource PageTitle}"/><Button Content="Export…" HorizontalAlignment="Right" Click="Export_Click" IsEnabled="{Binding CanExport}" Style="{StaticResource PrimaryButton}"/></Grid>
+            <TextBlock Text="Understand your data usage over time." Style="{StaticResource Caption}" Margin="0,6,0,22"/>
+            <Border Background="{StaticResource SidebarBrush}" CornerRadius="9" Padding="4" HorizontalAlignment="Left" Margin="0,0,0,22">
+                <StackPanel Orientation="Horizontal">
+                    <RadioButton Content="Today" GroupName="Period" Click="Today_Click">
+                        <RadioButton.Style><Style TargetType="RadioButton" BasedOn="{StaticResource Segment}">
+                            <Style.Triggers><DataTrigger Binding="{Binding PeriodTitle}" Value="Today"><Setter Property="IsChecked" Value="True"/></DataTrigger></Style.Triggers>
+                        </Style></RadioButton.Style>
+                    </RadioButton>
+                    <RadioButton Content="This Week" GroupName="Period" Click="Week_Click">
+                        <RadioButton.Style><Style TargetType="RadioButton" BasedOn="{StaticResource Segment}">
+                            <Style.Triggers><DataTrigger Binding="{Binding PeriodTitle}" Value="This Week"><Setter Property="IsChecked" Value="True"/></DataTrigger></Style.Triggers>
+                        </Style></RadioButton.Style>
+                    </RadioButton>
+                    <RadioButton Content="This Month" GroupName="Period" Click="Month_Click">
+                        <RadioButton.Style><Style TargetType="RadioButton" BasedOn="{StaticResource Segment}">
+                            <Style.Triggers><DataTrigger Binding="{Binding PeriodTitle}" Value="This Month"><Setter Property="IsChecked" Value="True"/></DataTrigger></Style.Triggers>
+                        </Style></RadioButton.Style>
+                    </RadioButton>
+                </StackPanel>
+            </Border>
+            <Grid Margin="0,0,0,20">
+                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                <Border Style="{StaticResource MetricCard}" Margin="0,0,12,0"><StackPanel>
+                    <Grid><TextBlock Text="DOWNLOADED" Style="{StaticResource Eyebrow}"/><TextBlock Text="&#xE896;" Style="{StaticResource Icon}" Foreground="{StaticResource PrimaryBrush}" HorizontalAlignment="Right"/></Grid>
+                    <Viewbox StretchDirection="DownOnly" HorizontalAlignment="Left" Height="48" Margin="0,10,0,0"><TextBlock Text="{Binding DownloadText}" Style="{StaticResource Metric}"/></Viewbox>
+                    <TextBlock Text="Received data" Style="{StaticResource Caption}" Margin="0,4,0,0"/>
+                </StackPanel></Border>
+                <Border Grid.Column="1" Style="{StaticResource MetricCard}" Margin="0,0,12,0"><StackPanel>
+                    <Grid><TextBlock Text="UPLOADED" Style="{StaticResource Eyebrow}"/><TextBlock Text="&#xE898;" Style="{StaticResource Icon}" Foreground="{StaticResource TealBrush}" HorizontalAlignment="Right"/></Grid>
+                    <Viewbox StretchDirection="DownOnly" HorizontalAlignment="Left" Height="48" Margin="0,10,0,0"><TextBlock Text="{Binding UploadText}" Style="{StaticResource Metric}"/></Viewbox>
+                    <TextBlock Text="Sent data" Style="{StaticResource Caption}" Margin="0,4,0,0"/>
+                </StackPanel></Border>
+                <Border Grid.Column="2" Style="{StaticResource MetricCard}"><StackPanel>
+                    <Grid><TextBlock Text="TOTAL USAGE" Style="{StaticResource Eyebrow}"/><TextBlock Text="&#xE9D9;" Style="{StaticResource Icon}" Foreground="{StaticResource PrimaryBrush}" HorizontalAlignment="Right"/></Grid>
+                    <Viewbox StretchDirection="DownOnly" HorizontalAlignment="Left" Height="48" Margin="0,10,0,0"><TextBlock Text="{Binding TotalText}" Style="{StaticResource Metric}"/></Viewbox>
+                    <TextBlock Text="Download + upload" Style="{StaticResource Caption}" Margin="0,4,0,0"/>
+                </StackPanel></Border>
+            </Grid>
+            <Border Style="{StaticResource Card}" Background="{StaticResource SurfaceBrush}">
+                <Grid>
+                    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="340"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                    <Grid>
+                        <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <StackPanel><TextBlock Text="Historical Data Usage" Style="{StaticResource SectionTitle}"/><TextBlock Text="{Binding PeriodRange}" Style="{StaticResource Caption}" Margin="0,5,0,0"/></StackPanel>
+                        <Border Grid.Column="1" Style="{StaticResource StatusBadge}" Background="{StaticResource BlueTintBrush}" VerticalAlignment="Top" Margin="16,0,0,0"><TextBlock Text="{Binding PeriodTitle}" FontSize="12"/></Border>
+                    </Grid>
+                    <lvc:CartesianChart x:Name="HistoryChart" Grid.Row="1" Margin="0,22,0,0" Background="{StaticResource SurfaceBrush}"
+                        Series="{Binding Series}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes}"
+                        LegendPosition="Bottom" TooltipPosition="Top" AutomationProperties.Name="Historical download and upload chart"/>
+                    <Border Grid.Row="1" Background="{StaticResource SurfaceBrush}" Margin="0,20,0,0">
+                        <Border.Style><Style TargetType="Border">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers><DataTrigger Binding="{Binding HasChartData}" Value="False"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers>
+                        </Style></Border.Style>
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="440">
+                            <TextBlock Text="&#xE81C;" Style="{StaticResource Icon}" FontSize="32" Foreground="{StaticResource PrimaryBrush}" HorizontalAlignment="Center" Margin="0,0,0,18"/>
+                            <TextBlock Text="Usage timeline" Style="{StaticResource SectionTitle}" HorizontalAlignment="Center"/>
+                            <TextBlock Text="{Binding StatusText}" Style="{StaticResource Caption}" TextAlignment="Center" Margin="0,10,0,0"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Grid.Row="2" Background="{StaticResource SidebarBrush}" Padding="14,12" CornerRadius="8" Margin="0,16,0,0">
+                        <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="28"/><ColumnDefinition/></Grid.ColumnDefinitions>
+                            <TextBlock Text="&#xE946;" Style="{StaticResource Icon}" Foreground="{StaticResource PrimaryBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{Binding StatusText}" Style="{StaticResource Caption}" AutomationProperties.LiveSetting="Polite"/>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
+
+

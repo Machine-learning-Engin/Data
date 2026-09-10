@@ -1,0 +1,97 @@
+<UserControl x:Class="DataMonitor.App.Views.DashboardView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="30,26,30,30">
+            <Grid Margin="0,0,0,24">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock Text="Network Overview" Style="{StaticResource PageTitle}"/>
+                    <TextBlock Text="Live traffic and your monthly data allowance." Style="{StaticResource Caption}" Margin="0,6,0,0"/>
+                </StackPanel>
+                <Border Grid.Column="1" Style="{StaticResource StatusBadge}" VerticalAlignment="Center" Margin="16,0,0,0">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE701;" Style="{StaticResource Icon}" Foreground="{StaticResource TealBrush}" Margin="0,0,10,0"/>
+                        <StackPanel>
+                            <TextBlock Text="{Binding AdapterDisplayName}" FontWeight="SemiBold" MaxWidth="190" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"/>
+                            <TextBlock Text="{Binding ConnectionText}" Style="{StaticResource ConnectionStatus}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </Grid>
+            <Grid Margin="0,0,0,18">
+                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                <Border Style="{StaticResource MetricCard}" Margin="0,0,12,0">
+                    <StackPanel>
+                        <Grid><TextBlock Text="DOWNLOAD" Style="{StaticResource Eyebrow}"/>
+                            <TextBlock Text="&#xE896;" Style="{StaticResource Icon}" Foreground="{StaticResource PrimaryBrush}" HorizontalAlignment="Right"/>
+                        </Grid>
+                        <Viewbox Stretch="Uniform" StretchDirection="DownOnly" HorizontalAlignment="Left" Height="48" Margin="0,12,0,0">
+                            <TextBlock Text="{Binding DownloadMbps, StringFormat={}{0:F2} Mbps}" Style="{StaticResource Metric}"/>
+                        </Viewbox>
+                        <TextBlock Text="Incoming traffic" Style="{StaticResource Caption}" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="1" Style="{StaticResource MetricCard}" Margin="0,0,12,0">
+                    <StackPanel>
+                        <Grid><TextBlock Text="UPLOAD" Style="{StaticResource Eyebrow}"/>
+                            <TextBlock Text="&#xE898;" Style="{StaticResource Icon}" Foreground="{StaticResource TealBrush}" HorizontalAlignment="Right"/>
+                        </Grid>
+                        <Viewbox Stretch="Uniform" StretchDirection="DownOnly" HorizontalAlignment="Left" Height="48" Margin="0,12,0,0">
+                            <TextBlock Text="{Binding UploadMbps, StringFormat={}{0:F2} Mbps}" Style="{StaticResource Metric}"/>
+                        </Viewbox>
+                        <TextBlock Text="Outgoing traffic" Style="{StaticResource Caption}" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="2" Style="{StaticResource MetricCard}">
+                    <StackPanel>
+                        <Grid><TextBlock Text="LIVE TRAFFIC" Style="{StaticResource Eyebrow}"/>
+                            <TextBlock Text="&#xE9D9;" Style="{StaticResource Icon}" Foreground="{StaticResource TealBrush}" HorizontalAlignment="Right"/>
+                        </Grid>
+                        <Viewbox Stretch="Uniform" StretchDirection="DownOnly" HorizontalAlignment="Left" Height="48" Margin="0,12,0,0">
+                            <TextBlock Text="{Binding LiveTraffic}" Style="{StaticResource Metric}"/>
+                        </Viewbox>
+                        <TextBlock Text="{Binding ActivityText}" Style="{StaticResource ConnectionStatus}" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+            <Border Style="{StaticResource Card}" Margin="0,0,0,18" DataContext="{Binding MonthlyUsage}">
+                <Grid>
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="1.1*"/><ColumnDefinition Width="1.4*"/></Grid.ColumnDefinitions>
+                    <StackPanel Margin="0,0,24,0">
+                        <TextBlock Text="MONTHLY USAGE" Style="{StaticResource Eyebrow}"/>
+                        <TextBlock Text="{Binding UsedText}" FontSize="24" FontWeight="SemiBold" Margin="0,8,0,4"/>
+                        <TextBlock Text="{Binding LimitText}" Style="{StaticResource Caption}"/>
+                        <TextBlock Text="{Binding PeriodText}" Style="{StaticResource Caption}" FontSize="12" Margin="0,8,0,0"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <Grid>
+                            <TextBlock Text="{Binding RemainingText}" Style="{StaticResource Caption}" Margin="0,0,96,0"/>
+                            <TextBlock Text="{Binding PercentageText}" Foreground="{StaticResource TealBrush}" FontWeight="SemiBold" HorizontalAlignment="Right"/>
+                        </Grid>
+                        <ProgressBar Value="{Binding Progress, Mode=OneWay}" Foreground="{Binding StatusColor}" Margin="0,12,0,12" AutomationProperties.Name="Monthly data usage percentage"/>
+                        <Border Style="{StaticResource StatusBadge}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="●" Foreground="{Binding StatusColor}" Margin="0,0,8,0"/>
+                                <TextBlock Text="{Binding StatusText}" Foreground="{Binding StatusColor}" MaxWidth="360" FontSize="13" AutomationProperties.LiveSetting="Polite"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+            </Border>
+            <Border Style="{StaticResource Card}" Background="{StaticResource SurfaceBrush}">
+                <Grid>
+                    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="320"/></Grid.RowDefinitions>
+                    <StackPanel>
+                        <TextBlock Text="Live Traffic History" Style="{StaticResource SectionTitle}"/>
+                        <TextBlock Text="Download and upload speeds · latest 60 samples" Style="{StaticResource Caption}" Margin="0,4,0,0"/>
+                    </StackPanel>
+                    <lvc:CartesianChart x:Name="TrafficChart" Grid.Row="1" Margin="0,18,0,0" Background="{StaticResource SurfaceBrush}"
+                        Series="{Binding Series}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes}"
+                        LegendPosition="Bottom" TooltipPosition="Top" AutomationProperties.Name="Live download and upload traffic chart"/>
+                </Grid>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

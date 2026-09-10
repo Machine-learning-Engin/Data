@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>dotnet-DataMonitor.MonitorService-e5013e39-f478-4a45-ab05-82ee8d55e111</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.30" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.11" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DataMonitor.Core\DataMonitor.Core.csproj" />
+    <ProjectReference Include="..\DataMonitor.Infrastructure\DataMonitor.Infrastructure.csproj" />
+    <ProjectReference Include="..\DataMonitor.Database\DataMonitor.Database.csproj" />
+  </ItemGroup>
+</Project>

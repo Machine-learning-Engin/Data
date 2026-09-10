@@ -1,0 +1,109 @@
+<UserControl x:Class="DataMonitor.App.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Loaded="Settings_Loaded">
+    <Grid>
+        <Grid.RowDefinitions><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Margin="30,26,30,24">
+                <TextBlock Text="Settings" Style="{StaticResource PageTitle}"/>
+                <TextBlock Text="Make DataMonitor work for your network." Style="{StaticResource Caption}" Margin="0,6,0,24"/>
+                <Border Style="{StaticResource Card}" Margin="0,0,0,18">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,22"><TextBlock Text="&#xE701;" Style="{StaticResource Icon}" Foreground="{StaticResource PrimaryBrush}" Margin="0,0,12,0"/><TextBlock Text="Monitoring" Style="{StaticResource SectionTitle}"/></StackPanel>
+                        <Label Content="Network adapter" Target="{Binding ElementName=AdapterInput}"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                            <ComboBox x:Name="AdapterInput" ItemsSource="{Binding AvailableAdapters}" SelectedValuePath="Id"
+                                      SelectedValue="{Binding SelectedAdapterId, Mode=TwoWay}" IsEnabled="{Binding CanEdit}"
+                                      AutomationProperties.Name="Network adapter" MaxDropDownHeight="320">
+                                <ComboBox.ItemTemplate><DataTemplate>
+                                    <StackPanel MaxWidth="520">
+                                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold"/>
+                                                                                <TextBlock Text="{Binding DisplayName}" FontSize="12" Margin="0,3,0,0">
+                                            <TextBlock.Style><Style TargetType="TextBlock" BasedOn="{StaticResource Caption}">
+                                                <Style.Triggers><DataTrigger Binding="{Binding Id}" Value=""><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers>
+                                            </Style></TextBlock.Style>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </DataTemplate></ComboBox.ItemTemplate>
+                            </ComboBox>
+                            <Button Grid.Column="1" Click="RefreshAdapters_Click" IsEnabled="{Binding CanEdit}" Margin="12,0,0,0" VerticalAlignment="Top" ToolTip="Refresh available adapters" AutomationProperties.Name="Refresh adapters">
+                                <StackPanel Orientation="Horizontal"><TextBlock Text="&#xE72C;" Style="{StaticResource Icon}" Foreground="{StaticResource TealBrush}" Margin="0,0,8,0"/><TextBlock Text="Refresh"/></StackPanel>
+                            </Button>
+                        </Grid>
+                        <TextBlock Text="{Binding SavedAdapterText, StringFormat=Saved selection: {0}}" Style="{StaticResource Caption}" Margin="0,10,0,4"/>
+                        <TextBlock Text="{Binding AdapterStatusText}" Style="{StaticResource Caption}"/>
+                        <Border Background="{StaticResource LineBrush}" Height="1" Margin="0,20"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="180"/></Grid.ColumnDefinitions>
+                            <StackPanel Margin="0,0,24,0">
+                                <Label Content="Monitoring interval" Target="{Binding ElementName=IntervalInput}"/>
+                                <TextBlock Text="1–60 seconds. Changes apply after the Worker's current wait. Dashboard continues refreshing every second."
+                                           Style="{StaticResource Caption}"/>
+                                <TextBlock Text="Intervals above five seconds also reduce History snapshot frequency." Style="{StaticResource Caption}" Margin="0,6,0,0"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" VerticalAlignment="Top">
+                                <TextBox x:Name="IntervalInput" Text="{Binding IntervalText, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding CanEdit}" AutomationProperties.Name="Monitoring interval"/>
+                                <TextBlock Text="seconds" Style="{StaticResource Caption}" Margin="0,6,0,0"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource Card}" Margin="0,0,0,18">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,20"><TextBlock Text="&#xE9D9;" Style="{StaticResource Icon}" Foreground="{StaticResource TealBrush}" Margin="0,0,12,0"/><TextBlock Text="Data Usage Limits" Style="{StaticResource SectionTitle}"/></StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                            <StackPanel Margin="0,0,16,0">
+                                <Label Content="Monthly data limit" Target="{Binding ElementName=MonthlyLimitInput}"/>
+                                <TextBox x:Name="MonthlyLimitInput" Text="{Binding MonthlyLimitGBText, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding CanEdit}" AutomationProperties.Name="Monthly data limit"/>
+                                <TextBlock Text="GB · blank or 0 for no limit" Style="{StaticResource Caption}" Margin="0,8,0,0"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Margin="0,0,16,0">
+                                <Label Content="Warning threshold" Target="{Binding ElementName=WarningInput}"/>
+                                <TextBox x:Name="WarningInput" Text="{Binding WarningPercentageText, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding CanEdit}" AutomationProperties.Name="Warning threshold"/>
+                                <StackPanel Orientation="Horizontal" Margin="0,8,0,0"><TextBlock Text="●" Foreground="{StaticResource WarningBrush}" Margin="0,0,6,0"/><TextBlock Text="% of monthly limit" Style="{StaticResource Caption}"/></StackPanel>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <Label Content="Critical threshold" Target="{Binding ElementName=CriticalInput}"/>
+                                <TextBox x:Name="CriticalInput" Text="{Binding CriticalPercentageText, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding CanEdit}" AutomationProperties.Name="Critical threshold"/>
+                                <StackPanel Orientation="Horizontal" Margin="0,8,0,0"><TextBlock Text="●" Foreground="{StaticResource CriticalBrush}" Margin="0,0,6,0"/><TextBlock Text="% of monthly limit" Style="{StaticResource Caption}"/></StackPanel>
+                            </StackPanel>
+                        </Grid>
+                        <TextBlock Text="Warning must be below critical; both must be between 0 and 100. Uses 1 GB = 1,024 MB, matching History." Style="{StaticResource Caption}" Margin="0,20,0,0"/>
+                        <TextBlock Text="Windows notifications are sent once per severity each month while DataMonitor is running." Style="{StaticResource Caption}" Margin="0,6,0,0"/>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource Card}" Margin="0,0,0,18">
+                    <Grid>
+                        <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <StackPanel Margin="0,0,20,0">
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,16"><TextBlock Text="&#xE713;" Style="{StaticResource Icon}" Foreground="{StaticResource PrimaryBrush}" Margin="0,0,12,0"/><TextBlock Text="Application" Style="{StaticResource SectionTitle}"/></StackPanel>
+                            <TextBlock Text="{Binding VersionText}" Style="{StaticResource Caption}" Margin="0,0,0,12"/>
+                            <TextBlock Text="Start with Windows" FontWeight="SemiBold"/>
+                            <TextBlock Text="Start normally when you sign in. Apply changes with Save settings." Style="{StaticResource Caption}" Margin="0,6,0,0"/>
+                        </StackPanel>
+                        <CheckBox Grid.Column="1" Content="Enabled" Foreground="{StaticResource TextBrush}" IsChecked="{Binding StartWithWindows}" IsEnabled="{Binding CanEdit}" VerticalAlignment="Center" AutomationProperties.Name="Start DataMonitor with Windows"/>
+                    </Grid>
+                </Border>
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,18"><TextBlock Text="&#xE1D3;" Style="{StaticResource Icon}" Foreground="{StaticResource TealBrush}" Margin="0,0,12,0"/><TextBlock Text="Database" Style="{StaticResource SectionTitle}"/></StackPanel>
+                        <Label Content="Database location" Target="{Binding ElementName=DatabaseInput}"/>
+                        <TextBox x:Name="DatabaseInput" Text="{Binding DatabaseLocation, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap" AutomationProperties.Name="Database location"/>
+                        <TextBlock Text="Shared by monitoring, History, and Settings. Raw records older than 90 days are removed once daily. This location is read-only." Style="{StaticResource Caption}" Margin="0,10,0,0"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+        <Border Grid.Row="1" Background="{StaticResource SidebarBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="0,1,0,0" Padding="30,16">
+            <Grid>
+                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <TextBlock Text="{Binding StatusText}" Style="{StaticResource Caption}" VerticalAlignment="Center" Margin="0,0,24,0" AutomationProperties.LiveSetting="Polite"/>
+                <Button Grid.Column="1" Content="Save settings" Click="Save_Click" IsEnabled="{Binding CanEdit}" Style="{StaticResource PrimaryButton}" MinWidth="148"/>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>
+
+

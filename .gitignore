@@ -1,0 +1,41 @@
+# Visual Studio / VS Code
+.vs/
+.vscode/
+
+# .NET build output
+**/bin/
+**/obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Test results
+TestResults/
+*.trx
+
+# SQLite databases
+*.db
+*.db-shm
+*.db-wal
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+
+# Release/publish output
+artifacts/
+
+# NuGet
+packages/
+*.nupkg
+*.snupkg
